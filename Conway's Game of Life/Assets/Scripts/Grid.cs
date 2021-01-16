@@ -5,12 +5,12 @@ using UnityEngine;
 public class Grid : MonoBehaviour
 {
     [SerializeField]
-    private uint _gridSize = 5;
+    private int _gridSize = 5;
 
     [SerializeField]
     private GameObject _cellPrefab;
 
-    private uint _totalCells;
+    private int _totalCells;
     private GameObject[] _cells;
     //private Cell[] _cells;
 
@@ -29,8 +29,8 @@ public class Grid : MonoBehaviour
         float height = _cellPrefab.GetComponent<BoxCollider2D>().size.y;
 
         // coordinates to set the position of each cell
-        int x = 0;
-        int y = 0;
+        int x = _gridSize / -2;
+        int y = _gridSize / -2;
         for (int index = 0; index < _totalCells; ++index)
         {
             // instantiate the cell
@@ -44,7 +44,7 @@ public class Grid : MonoBehaviour
             // row (update the y offset)
             if ((index + 1) % _gridSize == 0 && index != 0)
             {
-                x = 0;
+                x = _gridSize / -2;
                 y++;
             }
         }

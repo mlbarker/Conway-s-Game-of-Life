@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 567375fadafb2e746bbcaa868ae75480, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gridSize: 5
+  _gridSize: 4
   _cellPrefab: {fileID: 834373673120658159, guid: 2ab4f8c0cbb5b4e47a2f1861333072dd,
     type: 3}
 --- !u!4 &1473918261
