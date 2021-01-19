@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
@@ -12,10 +10,6 @@ public class Grid : MonoBehaviour
 
     private int _totalCells;
     private GameObject[] _cells;
-    //private Cell[] _cells;
-
-    //[SerializeField]
-    //private GameObject[,] m_cellsGameObject;
 
     // Start is called before the first frame update
     void Start()
@@ -48,11 +42,133 @@ public class Grid : MonoBehaviour
                 y++;
             }
         }
+
+        // set up neighbors for each cell
+        for (int index = 0; index < _cells.Length; ++index)
+        {
+            Cell cell = _cells[index].GetComponent<Cell>();
+            if (cell != null)
+            {
+                // THE SPECIAL CASE TREE
+                // front index
+                if (/*index != 0 &&*/ index % _gridSize != 0)
+                {
+                    cell.AddNeighbor(_cells[index - 1].GetComponent<Cell>());
+                }
+
+                // behind index
+                if (index != _totalCells - 1 && (index + 1) % _gridSize != 0)
+                {
+                    cell.AddNeighbor(_cells[index + 1].GetComponent<Cell>());
+                }
+
+                // above index
+                if (index - _gridSize >= 0)
+                {
+                    cell.AddNeighbor(_cells[index - _gridSize].GetComponent<Cell>());
+                }
+
+                // below index
+                if (index + _gridSize <= _totalCells - 1)
+                {
+                    cell.AddNeighbor(_cells[index + _gridSize].GetComponent<Cell>());
+                }
+
+                // above left index
+                if ((index - _gridSize) - 1 >= 0 && index % _gridSize != 0)
+                {
+                    cell.AddNeighbor(_cells[(index - _gridSize) - 1].GetComponent<Cell>());
+                }
+
+                // above right index
+                if ((index - _gridSize) + 1 >= 0 && (index + 1) % _gridSize != 0)
+                {
+                    cell.AddNeighbor(_cells[(index - _gridSize) + 1].GetComponent<Cell>());
+                }
+
+                // below left index
+                if ((index + _gridSize) - 1 <= _totalCells - 1 && index % _gridSize != 0)
+                {
+                    cell.AddNeighbor(_cells[(index + _gridSize) - 1].GetComponent<Cell>());
+                }
+
+                // below right index
+                if ((index + _gridSize) + 1 <= _totalCells - 1 && (index + 1) % _gridSize != 0)
+                {
+                    cell.AddNeighbor(_cells[(index + _gridSize) + 1].GetComponent<Cell>());
+                }
+            }
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void ClickOnCellsOn()
+    {
+        foreach(var cellGO in _cells)
+        {
+            Cell cell = cellGO.GetComponent<Cell>();
+            if (cell != null)
+            {
+                cell.Click = true;
+                cell.Clear();
+            }
+            else
+            {
+                Debug.LogError("Cell is null - ClickOnCellsOn()");
+            }
+        }
+    }
+
+    public void ClickOnCellsOff()
+    {
+        foreach (var cellGO in _cells)
+        {
+            Cell cell = cellGO.GetComponent<Cell>();
+            if (cell != null)
+            {
+                cell.Click = false;
+            }
+            else
+            {
+                Debug.LogError("Cell is null - ClickOnCellsOff()");
+            }
+        }
+    }
+
+    public void PreTick()
+    {
+        for (int index = 0; index < _cells.Length; ++index)
+        {
+            Cell cell = _cells[index].GetComponent<Cell>();
+            if (cell != null)
+            {
+                cell.DetermineNextStatus();
+            }
+            else
+            {
+                Debug.LogError("Cell is null - PreTick()");
+            }
+        }
+    }
+
+    public void Tick()
+    {
+        for (int index = 0; index < _cells.Length; ++index)
+        {
+            Cell cell = _cells[index].GetComponent<Cell>();
+            if (cell != null)
+            {
+                cell.ExecuteStatus();
+            }
+            else
+            {
+                Debug.LogError("Cell is null - PreTick()");
+            }
+        }
     }
 }
