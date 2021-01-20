@@ -110,8 +110,11 @@ public class Cell : MonoBehaviour
 
     public void Clear()
     {
-        _dead = true;
-        m_animator.SetBool("CellDead", _dead);
+        if (m_animator != null)
+        {
+            _dead = true;
+            m_animator.SetBool("CellDead", _dead);
+        }
     }
 
     public void AddNeighbor(Cell neighbor)
@@ -131,46 +134,6 @@ public class Cell : MonoBehaviour
         else
         {
             Debug.LogError("neighbor is null - AddNeighbor()");
-        }
-    }
-
-    public void DetermineNextStatus()
-    {
-        // check for neighbors that are alive
-        int aliveNeighbors = 0;
-        foreach (var neighbor in _neighbors)
-        {
-            if (neighbor != null)
-            {
-                if (!neighbor.Dead)
-                {
-                    aliveNeighbors++;
-                }
-            }
-        }
-
-        if (!_dead)
-        {
-            // fewer than two live neighbors or 
-            // four or more neighbors kills this cell
-            if (aliveNeighbors < 2 || aliveNeighbors >= 4)
-            {
-                NextStatus = true;
-            }
-            else
-            {
-                NextStatus = false;
-            }
-        }
-        // resurrection
-        else if (_dead && aliveNeighbors == 3)
-        {
-            NextStatus = false;
-        }
-        // status stays the same
-        else
-        {
-            NextStatus = true;
         }
     }
 

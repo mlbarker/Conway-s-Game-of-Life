@@ -9,6 +9,8 @@ TagManager:
   - SetupButton
   - TickButton
   - StartButton
+  - Grid10Button
+  - ExitButton
   layers:
   - Default
   - TransparentFX

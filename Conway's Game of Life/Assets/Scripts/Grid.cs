@@ -5,7 +5,7 @@ public class Grid : MonoBehaviour
     #region Editor Fields
 
     [SerializeField]
-    private int _gridSize = 5;
+    private int _gridSize;
 
     [SerializeField]
     private GameObject _cellPrefab;
@@ -21,6 +21,11 @@ public class Grid : MonoBehaviour
 
     #region Properties
 
+    public int GridSize
+    {
+        get => _gridSize;
+        set => _gridSize = value;
+    }
     public int TotalCells => _totalCells;
 
     #endregion
@@ -29,6 +34,71 @@ public class Grid : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
+    {
+        CreateCellGrid();
+        SetUpNeighbors();
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public Cell GetCell(int index)
+    {
+        Cell cell = _cells[index].GetComponent<Cell>();
+        if (cell != null)
+        {
+            return cell;
+        }
+
+        return null;
+    }
+
+    public void ClickOnCellsOn()
+    {
+        foreach(var cellGO in _cells)
+        {
+            Cell cell = cellGO.GetComponent<Cell>();
+            if (cell != null)
+            {
+                cell.Click = true;
+                cell.Clear();
+            }
+            else
+            {
+                Debug.LogError("Cell is null - ClickOnCellsOn()");
+            }
+        }
+    }
+
+    public void ClickOnCellsOff()
+    {
+        foreach (var cellGO in _cells)
+        {
+            Cell cell = cellGO.GetComponent<Cell>();
+            if (cell != null)
+            {
+                cell.Click = false;
+            }
+            else
+            {
+                Debug.LogError("Cell is null - ClickOnCellsOff()");
+            }
+        }
+    }
+
+    public void ResetGrid()
+    {
+        DestroyGrid();
+        CreateCellGrid();
+        SetUpNeighbors();
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void CreateCellGrid()
     {
         _totalCells = _gridSize * _gridSize;
         _cells = new GameObject[_totalCells];
@@ -46,7 +116,7 @@ public class Grid : MonoBehaviour
             // instantiate the cell
             Vector3 position = new Vector3(width * x, height * y, 1);
             _cells[index] = Instantiate(_cellPrefab, position, Quaternion.identity);
-            
+
             // update the x offset
             x++;
 
@@ -58,7 +128,10 @@ public class Grid : MonoBehaviour
                 y++;
             }
         }
+    }
 
+    private void SetUpNeighbors()
+    {
         // set up neighbors for each cell
         for (int index = 0; index < _cells.Length; ++index)
         {
@@ -117,51 +190,11 @@ public class Grid : MonoBehaviour
         }
     }
 
-    #endregion
-
-    #region Public Methods
-
-    public Cell GetCell(int index)
+    private void DestroyGrid()
     {
-        Cell cell = _cells[index].GetComponent<Cell>();
-        if (cell != null)
+        for (int index = 0; index < _totalCells; ++index)
         {
-            return cell;
-        }
-
-        return null;
-    }
-
-    public void ClickOnCellsOn()
-    {
-        foreach(var cellGO in _cells)
-        {
-            Cell cell = cellGO.GetComponent<Cell>();
-            if (cell != null)
-            {
-                cell.Click = true;
-                cell.Clear();
-            }
-            else
-            {
-                Debug.LogError("Cell is null - ClickOnCellsOn()");
-            }
-        }
-    }
-
-    public void ClickOnCellsOff()
-    {
-        foreach (var cellGO in _cells)
-        {
-            Cell cell = cellGO.GetComponent<Cell>();
-            if (cell != null)
-            {
-                cell.Click = false;
-            }
-            else
-            {
-                Debug.LogError("Cell is null - ClickOnCellsOff()");
-            }
+            Destroy(_cells[index]);
         }
     }
 
