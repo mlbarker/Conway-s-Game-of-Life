@@ -34,13 +34,30 @@ public class Cell : MonoBehaviour
     public bool NextStatus
     {
         get => _nextStatus.Peek();
-        private set => _nextStatus.Enqueue(value);
+        set => _nextStatus.Enqueue(value);
     }
+
+    public Cell[] Neighbors => _neighbors;
 
     public int AliveNeighbors
     {
-        get => _aliveNeighbors;
-        private set => _aliveNeighbors = value;
+        get
+        {
+            // check for neighbors that are alive
+            _aliveNeighbors = 0;
+            foreach (var neighbor in _neighbors)
+            {
+                if (neighbor != null)
+                {
+                    if (!neighbor.Dead)
+                    {
+                        _aliveNeighbors++;
+                    }
+                }
+            }
+
+            return _aliveNeighbors;
+        }
     }
 
     public bool Click

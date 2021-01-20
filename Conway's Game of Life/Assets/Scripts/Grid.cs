@@ -2,14 +2,30 @@
 
 public class Grid : MonoBehaviour
 {
+    #region Editor Fields
+
     [SerializeField]
     private int _gridSize = 5;
 
     [SerializeField]
     private GameObject _cellPrefab;
 
+    #endregion
+
+    #region Fields
+
     private int _totalCells;
     private GameObject[] _cells;
+
+    #endregion
+
+    #region Properties
+
+    public int TotalCells => _totalCells;
+
+    #endregion
+
+    #region Unity Methods
 
     // Start is called before the first frame update
     void Start()
@@ -101,10 +117,19 @@ public class Grid : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    #endregion
+
+    #region Public Methods
+
+    public Cell GetCell(int index)
     {
-        
+        Cell cell = _cells[index].GetComponent<Cell>();
+        if (cell != null)
+        {
+            return cell;
+        }
+
+        return null;
     }
 
     public void ClickOnCellsOn()
@@ -140,35 +165,5 @@ public class Grid : MonoBehaviour
         }
     }
 
-    public void PreTick()
-    {
-        for (int index = 0; index < _cells.Length; ++index)
-        {
-            Cell cell = _cells[index].GetComponent<Cell>();
-            if (cell != null)
-            {
-                cell.DetermineNextStatus();
-            }
-            else
-            {
-                Debug.LogError("Cell is null - PreTick()");
-            }
-        }
-    }
-
-    public void Tick()
-    {
-        for (int index = 0; index < _cells.Length; ++index)
-        {
-            Cell cell = _cells[index].GetComponent<Cell>();
-            if (cell != null)
-            {
-                cell.ExecuteStatus();
-            }
-            else
-            {
-                Debug.LogError("Cell is null - PreTick()");
-            }
-        }
-    }
+    #endregion
 }
